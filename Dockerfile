@@ -1,33 +1,29 @@
-FROM golang:1.16.4-alpine3.13
-
-RUN apk add --no-cache --update alpine-sdk bash
-
-ENV GO111MODULE=on
-
+##########################
+# Step 1 Build binary
+##########################
+FROM --platform=$BUILDPLATFORM golang:alpine AS builder
+RUN apk update && apk add --no-cache git bash
 WORKDIR /app
-
 COPY go.mod .
 COPY go.sum .
-
 RUN go mod download
-
 COPY . .
-
-RUN make build
-
-FROM alpine:3.13.5
-
+RUN GOOS=${TARGETOS} GOARCH=${TARGETARCH} go build -o  bin/dex-k8s-authenticator *.go
+##########################
+# Step 2 Build a small image
+##########################
+FROM alpine
 # Dex connectors, such as GitHub and Google logins require root certificates.
 # Proper installations should manage those certificates, but it's a bad user
 # experience when this doesn't work out of the box.
 #
 # OpenSSL is required so wget can query HTTPS endpoints for health checking.
-RUN apk add --update ca-certificates openssl curl tini
-
+RUN apk update && apk add --no-cache ca-certificates openssl curl tini \
+  && rm -rf /var/cache/apk/*
 RUN mkdir -p /app/bin
-COPY --from=0 /app/bin/dex-k8s-authenticator /app/bin/
-COPY --from=0 /app/html /app/html
-COPY --from=0 /app/templates /app/templates
+COPY --from=builder /app/bin/dex-k8s-authenticator /app/bin/
+COPY --from=builder /app/html /app/html
+COPY --from=builder /app/templates /app/templates
 
 # Add any required certs/key by mounting a volume on /certs
 # The entrypoint will copy them and run update-ca-certificates at startup
