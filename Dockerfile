@@ -1,7 +1,7 @@
 ##########################
 # Step 1 Build binary
 ##########################
-FROM --platform=$BUILDPLATFORM golang:1.21.6-alpine AS builder
+FROM --platform=$BUILDPLATFORM golang:1.23.1-alpine AS builder
 RUN apk update && apk add --no-cache git bash
 WORKDIR /app
 COPY go.mod .
