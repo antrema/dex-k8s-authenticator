@@ -1,7 +1,7 @@
 ##########################
 # Step 1 Build binary
 ##########################
-FROM --platform=$BUILDPLATFORM golang:1.21.6-alpine AS builder
+FROM --platform=$BUILDPLATFORM golang:1.24.0-alpine AS builder
 RUN apk update && apk add --no-cache git bash
 WORKDIR /app
 COPY go.mod .
@@ -12,7 +12,7 @@ RUN GOOS=${TARGETOS} GOARCH=${TARGETARCH} go build -o  bin/dex-k8s-authenticator
 ##########################
 # Step 2 Build a small image
 ##########################
-FROM alpine
+FROM alpine:3.21.3
 # Dex connectors, such as GitHub and Google logins require root certificates.
 # Proper installations should manage those certificates, but it's a bad user
 # experience when this doesn't work out of the box.
