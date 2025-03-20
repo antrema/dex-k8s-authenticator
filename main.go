@@ -390,6 +390,7 @@ func initConfig() {
 		path := filepath.Dir(abs)
 
 		viper.SetConfigName(strings.Split(base, ".")[0])
+		viper.SetConfigType("yaml")
 		viper.AddConfigPath(path)
 		viper.SetDefault("web_path_prefix", "/")
 
