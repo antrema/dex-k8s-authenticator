@@ -12,7 +12,7 @@ RUN GOOS=${TARGETOS} GOARCH=${TARGETARCH} go build -o  bin/dex-k8s-authenticator
 ##########################
 # Step 2 Build a small image
 ##########################
-FROM alpine:3.21.3
+FROM alpine:3.22.0
 # Dex connectors, such as GitHub and Google logins require root certificates.
 # Proper installations should manage those certificates, but it's a bad user
 # experience when this doesn't work out of the box.
