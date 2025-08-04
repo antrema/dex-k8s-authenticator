@@ -3,7 +3,7 @@ module github.com/mintel/dex-k8s-authenticator
 go 1.24
 
 require (
-	github.com/coreos/go-oidc v2.3.0+incompatible
+	github.com/coreos/go-oidc v2.4.0+incompatible
 	github.com/spf13/cast v1.7.1
 	github.com/spf13/cobra v1.9.1
 	github.com/spf13/viper v1.20.0
